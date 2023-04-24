@@ -1,25 +1,21 @@
-// C-based Four in a Row game by Diogo Correia
 
-// Libraries
 #include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
-#include <math.h>
+
+// Taille de la grille
+#define COLONNES 7
+#define LIGNES 6
 
 // Constantes pour remplir la grille
 #define JOUEUR_BLANC 'B'
 #define JOUEUR_NOIR 'N'
 #define VIDE '.'
 
-// Taille de la grille
-#define COLONNES 7
-#define LIGNES 6
-
 // Fonction qui dessinera la grille
 void dessiner_tableau();
 
 // Lire l'entrée des joueurs et actualiser la grille
-void gerer_entree();
+void jouer_tour();
 
 // Verifier si on a une position gagnante
 char verifier_gagnant();
@@ -49,7 +45,7 @@ int main() {
     char gagnant = VIDE;
     do {
         dessiner_tableau();
-        gerer_entree();
+        jouer_tour();
         gagnant = verifier_gagnant();
     } while (gagnant == VIDE && !match_nul());
 
@@ -78,26 +74,29 @@ int main() {
 
 void dessiner_tableau() {
     int a, b, c;
-    for (a = LIGNES - 1; a >= 0; a--) {
-        for (b = 0; b < COLONNES; b++) {
+    for (a = LIGNES - 1; a >= 0; a--) {// Dessine une ligne
+        for (b = 0; b < COLONNES; b++) {// Dessine une case
             printf("|"  "%c"  "| ", grille[b][a]);
         }
         printf("\n");
 
     }
-    for (c = 0; c < COLONNES; c++)
+    for (c = 0; c < COLONNES; c++) // Separation entre la grille et les numeros des colonnes
         printf("____");
     printf("\n");
     for (c = 0; c < COLONNES; c++)
-        printf("|%d| ", c + 1);
+        printf("|%d| ", c + 1); // Les numeros des colonnes
     printf("\n\n");
 }
 
 // Gérer l'entrée des joueurs et jouer un tour.
-void gerer_entree() {
+void jouer_tour() {
 
     int colonne;
 
+    // On demande au joueur de choisir seulement la colonne,
+    // car de toute façon les pions sont censés etre afféctés par la gravité.
+    // Choisir une ligne n'a donc pas de sens
     if (tour)
         printf("\nAu Joueur en noir de jouer, entrer une colonne: ");
     else printf("\nAu Joueur en blanc de jouer, entrer une colonne: ");
@@ -107,12 +106,12 @@ void gerer_entree() {
 
     if (colonne < 1 || colonne > COLONNES) {
         printf("Entrée invalide. Réessayez.");
-        gerer_entree();
+        jouer_tour();
         return;
     }
 
     int i;
-    for (i = 0; i < LIGNES; i++) {
+    for (i = 0; i < LIGNES; i++) { // On verifie d'abord si la case choisie est valide
         if (grille[colonne - 1][i] != VIDE)
             continue;
         if (tour)
@@ -124,7 +123,7 @@ void gerer_entree() {
         return;
     }
     printf("\nPosition invalide. Réessayez.\n");
-    gerer_entree();
+    jouer_tour();
 }
 
 // Verifier s'il y'a une position gagnante.
@@ -164,3 +163,4 @@ bool match_nul() {
                 return false;
     return true;
 }
+
